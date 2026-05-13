@@ -18,19 +18,19 @@ export default async function AdminSourcesPage() {
         title="Sources Master Data"
         description="Manage transaction sources such as cash, bank, e-wallet."
       />
-      <div className="rounded-lg border border-border p-4">
-        <h3 className="font-medium">Add Source</h3>
+      <div className="app-card p-5">
+        <h3 className="font-semibold tracking-tight">Add Source</h3>
         <form action={createSourceAction} className="mt-3 grid gap-2 sm:grid-cols-4">
           <input
             name="name"
             placeholder="Source name"
-            className="h-10 rounded-md border border-border bg-background px-3 text-sm sm:col-span-2"
+            className="h-11 rounded-2xl border border-border/80 bg-card/80 px-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25 sm:col-span-2"
             required
           />
           <select
             name="type"
             defaultValue="cash"
-            className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+            className="h-11 rounded-2xl border border-border/80 bg-card/80 px-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25"
           >
             <option value="cash">Cash</option>
             <option value="bank">Bank</option>
@@ -39,15 +39,15 @@ export default async function AdminSourcesPage() {
           </select>
           <button
             type="submit"
-            className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+            className="h-11 rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:brightness-105 hover:shadow-md active:scale-[0.98]"
           >
             Add
           </button>
         </form>
       </div>
 
-      <div className="rounded-lg border border-border p-4">
-        <h3 className="font-medium">Source List</h3>
+      <div className="app-card p-5">
+        <h3 className="font-semibold tracking-tight">Source List</h3>
         {sources.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">No active sources found.</p>
         ) : (
@@ -55,7 +55,7 @@ export default async function AdminSourcesPage() {
             {sources.map((source) => (
               <div
                 key={source.id}
-                className="flex items-center justify-between rounded-md border border-border p-3"
+                className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/25 p-3"
               >
                 <div>
                   <p className="font-medium">{source.name}</p>
@@ -65,7 +65,7 @@ export default async function AdminSourcesPage() {
                   <input type="hidden" name="id" value={source.id} />
                   <button
                     type="submit"
-                    className="rounded-md border border-border px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10"
+                    className="rounded-xl border border-border/80 px-3 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/35 hover:bg-primary/10 active:scale-[0.98]"
                   >
                     Delete
                   </button>

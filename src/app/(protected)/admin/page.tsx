@@ -32,14 +32,17 @@ export default async function AdminPage() {
   }
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2">
+    <section className="grid gap-4 sm:grid-cols-2">
       {adminMenus.map((menu) => (
-        <article key={menu.title} className="rounded-lg border border-border p-4">
-          <h2 className="font-semibold">{menu.title}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{menu.description}</p>
+        <article
+          key={menu.title}
+          className="app-card flex flex-col p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+        >
+          <h2 className="text-lg font-semibold tracking-tight">{menu.title}</h2>
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{menu.description}</p>
           <Link
             href={menu.href}
-            className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:brightness-105 hover:shadow-md active:scale-[0.98]"
           >
             Open {menu.title}
           </Link>

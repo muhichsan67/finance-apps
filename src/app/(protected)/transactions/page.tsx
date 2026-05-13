@@ -1,36 +1,15 @@
-"use client";
+import { ListTransactionsForUserUseCase } from "@/core/use-cases/transaction/list-transactions-for-user";
+import { SupabaseTransactionRepository } from "@/infrastructure/repositories/supabase-transaction-repository";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUserRole } from "@/lib/auth/get-current-user-role";
+import { TransactionsListShell } from "./transactions-list-shell";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ViewportToggle } from "@/components/viewport-toggle";
-import { TransactionAttachmentUploader } from "@/components/transaction-attachment-uploader";
+export default async function TransactionsPage() {
+  const supabase = await createSupabaseServerClient();
+  const { userId } = await getCurrentUserRole();
+  const txRepository = new SupabaseTransactionRepository(supabase);
+  const listTx = new ListTransactionsForUserUseCase(txRepository);
+  const transactions = await listTx.execute(userId);
 
-export default function TransactionsPage() {
-  const [desktopMode, setDesktopMode] = useState(false);
-
-  return (
-    <section className={`grid gap-4 ${desktopMode ? "max-w-5xl" : "max-w-md"}`}>
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <h2 className="font-semibold">Transactions</h2>
-          <p className="text-sm text-muted-foreground">
-            User role area for transaction management.
-          </p>
-        </div>
-        <ViewportToggle
-          desktopMode={desktopMode}
-          onDesktopModeChange={setDesktopMode}
-        />
-      </div>
-
-      <div className="grid gap-3">
-        <Button className="w-full">Create Transaction (next)</Button>
-        <Button variant="outline" className="w-full">
-          View Transaction History (next)
-        </Button>
-      </div>
-
-      <TransactionAttachmentUploader />
-    </section>
-  );
+  return <TransactionsListShell transactions={transactions} />;
 }

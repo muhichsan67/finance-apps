@@ -18,7 +18,7 @@ export default async function AdminUsersPage() {
         title="Users Management"
         description="Create users, update roles, and control account access."
       />
-      <div className="rounded-lg border border-border p-4">
+      <div className="app-card p-5">
         <h3 className="font-medium">Users List</h3>
         {users.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">No active users found.</p>
@@ -27,7 +27,7 @@ export default async function AdminUsersPage() {
             {users.map((user) => (
               <div
                 key={user.id}
-                className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_auto_auto]"
+                className="grid gap-3 rounded-2xl border border-border/70 bg-muted/30 p-4 sm:grid-cols-[1fr_auto_auto]"
               >
                 <div>
                   <p className="font-medium">{user.name ?? "(No Name)"}</p>
@@ -38,7 +38,7 @@ export default async function AdminUsersPage() {
                   <select
                     name="role"
                     defaultValue={user.role}
-                    className="h-9 rounded-md border border-border bg-background px-2 text-sm"
+                    className="h-10 rounded-xl border border-border/80 bg-card px-2 text-sm transition-colors focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25"
                     disabled={user.id === currentUser.userId}
                   >
                     <option value="admin">admin</option>
@@ -46,7 +46,7 @@ export default async function AdminUsersPage() {
                   </select>
                   <button
                     type="submit"
-                    className="rounded-md border border-border px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-50"
+                    className="rounded-xl border border-border/80 px-3 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/35 hover:bg-primary/10 active:scale-[0.98] disabled:opacity-50"
                     disabled={user.id === currentUser.userId}
                   >
                     Update
@@ -56,7 +56,7 @@ export default async function AdminUsersPage() {
                   <input type="hidden" name="id" value={user.id} />
                   <button
                     type="submit"
-                    className="rounded-md border border-border px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-50"
+                    className="rounded-xl border border-border/80 px-3 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/35 hover:bg-primary/10 active:scale-[0.98] disabled:opacity-50"
                     disabled={user.id === currentUser.userId}
                   >
                     Delete

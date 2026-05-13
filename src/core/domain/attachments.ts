@@ -27,8 +27,17 @@ export interface UploadTransactionAttachmentsInput {
   files: UploadableAttachment[];
 }
 
+export interface InsertTransactionAttachmentRecordsInput {
+  transactionId: number;
+  actorUserId: string;
+  items: { filePath: string; fileType: string }[];
+}
+
 export interface ITransactionAttachmentRepository {
   uploadTransactionAttachments(
     input: UploadTransactionAttachmentsInput
   ): Promise<UploadedAttachment[]>;
+  insertAttachmentRecords(input: InsertTransactionAttachmentRecordsInput): Promise<void>;
+  /** Remove objects from the attachments bucket (compensation / rollback). */
+  deleteStoragePaths(paths: string[]): Promise<void>;
 }

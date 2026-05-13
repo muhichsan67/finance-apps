@@ -21,8 +21,8 @@ export default async function AdminSystemSettingsPage() {
         title="System Settings"
         description="Manage global finance application configuration."
       />
-      <div className="rounded-lg border border-border p-4">
-        <h3 className="font-medium">Add / Update Setting</h3>
+      <div className="app-card p-5">
+        <h3 className="font-semibold tracking-tight">Add / Update Setting</h3>
         <form
           action={upsertSystemSettingAction}
           className="mt-3 grid gap-2 sm:grid-cols-4"
@@ -30,31 +30,31 @@ export default async function AdminSystemSettingsPage() {
           <input
             name="key_name"
             placeholder="key_name"
-            className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+            className="h-11 rounded-2xl border border-border/80 bg-card/80 px-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25"
             required
           />
           <input
             name="value"
             placeholder="value"
-            className="h-10 rounded-md border border-border bg-background px-3 text-sm sm:col-span-2"
+            className="h-11 rounded-2xl border border-border/80 bg-card/80 px-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25 sm:col-span-2"
             required
           />
           <input
             name="setting_group"
             placeholder="group (optional)"
-            className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+            className="h-11 rounded-2xl border border-border/80 bg-card/80 px-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/25"
           />
           <button
             type="submit"
-            className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground sm:col-start-4"
+            className="h-11 rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:brightness-105 hover:shadow-md active:scale-[0.98] sm:col-start-4"
           >
             Save
           </button>
         </form>
       </div>
 
-      <div className="rounded-lg border border-border p-4">
-        <h3 className="font-medium">Settings List</h3>
+      <div className="app-card p-5">
+        <h3 className="font-semibold tracking-tight">Settings List</h3>
         {settings.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">No active settings found.</p>
         ) : (
@@ -62,7 +62,7 @@ export default async function AdminSystemSettingsPage() {
             {settings.map((setting) => (
               <div
                 key={setting.id}
-                className="flex items-center justify-between rounded-md border border-border p-3"
+                className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/25 p-3"
               >
                 <div className="min-w-0">
                   <p className="font-medium">{setting.key_name}</p>
@@ -77,7 +77,7 @@ export default async function AdminSystemSettingsPage() {
                   <input type="hidden" name="id" value={setting.id} />
                   <button
                     type="submit"
-                    className="rounded-md border border-border px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10"
+                    className="rounded-xl border border-border/80 px-3 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/35 hover:bg-primary/10 active:scale-[0.98]"
                   >
                     Delete
                   </button>

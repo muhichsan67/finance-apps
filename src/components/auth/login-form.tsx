@@ -20,7 +20,7 @@ export function LoginForm() {
 
   return (
     <form
-      className="grid gap-3"
+      className="grid gap-4"
       onSubmit={async (e) => {
         e.preventDefault();
         setError("");
@@ -56,14 +56,14 @@ export function LoginForm() {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+        className="h-12 rounded-2xl border border-border/80 bg-card/80 px-4 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+        className="h-12 rounded-2xl border border-border/80 bg-card/80 px-4 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       <Button type="submit" disabled={loading}>
         {loading ? "Signing in..." : "Login"}

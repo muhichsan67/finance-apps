@@ -2,35 +2,83 @@
 @import "tw-animate-css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted-foreground: #737373;
-  --border: #e5e7eb;
-  --primary: #111827;
+  /* Reference: savings UI — cool off-white with a whisper of blue */
+  --background: #f4f7fc;
+  --foreground: #0f172a;
+  --muted: #eef2f7;
+  --muted-foreground: #64748b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --ring: #2b50ed;
+  /* Royal blue — balance ring, progress, active nav, primary buttons */
+  --primary: #2b50ed;
   --primary-foreground: #ffffff;
+  /* Progress tracks / subtle surfaces — light cool grey */
+  --accent: #e8eef7;
+  --accent-foreground: #1e293b;
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --nav-shadow: 0 -8px 32px rgba(43, 80, 237, 0.07);
+  --card-shadow:
+    0 4px 24px -4px rgba(15, 23, 42, 0.06),
+    0 12px 40px -12px rgba(43, 80, 237, 0.1);
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --muted-foreground: #a1a1aa;
-  --border: #27272a;
-  --primary: #f4f4f5;
-  --primary-foreground: #09090b;
+  --background: #0b1120;
+  --foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --card: #111c2e;
+  --card-foreground: #f1f5f9;
+  --border: #1e293b;
+  --ring: #4d7cff;
+  --primary: #3d6dff;
+  --primary-foreground: #ffffff;
+  --accent: #1e293b;
+  --accent-foreground: #e2e8f0;
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(11, 17, 32, 0.88);
+  --nav-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+  --card-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.45);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+@utility app-card {
+  border-radius: 1.25rem;
+  border-width: 1px;
+  border-color: color-mix(in oklab, var(--border) 85%, transparent);
+  background-color: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--card-shadow);
+  @supports (backdrop-filter: blur(8px)) {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@utility app-shell-gradient {
+  background:
+    radial-gradient(100% 75% at 100% 0%, rgba(43, 80, 237, 0.07), transparent 52%),
+    radial-gradient(85% 55% at 0% 100%, rgba(148, 163, 253, 0.14), transparent 48%),
+    var(--background);
 }

@@ -21,15 +21,15 @@ export function Switch({
       aria-checked={checked}
       onClick={() => onCheckedChange(!checked)}
       className={cn(
-        "relative inline-flex h-6 w-10 items-center rounded-full transition-colors",
-        checked ? "bg-primary" : "bg-zinc-300 dark:bg-zinc-700",
+        "relative inline-flex h-6 w-10 items-center rounded-full transition-colors duration-200",
+        checked ? "bg-primary shadow-inner" : "bg-muted-foreground/25",
         className
       )}
       {...props}
     >
       <span
         className={cn(
-          "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+          "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-out",
           checked ? "translate-x-5" : "translate-x-1"
         )}
       />

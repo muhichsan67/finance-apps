@@ -6,9 +6,9 @@ export function SectionHeader({
   description: string;
 }) {
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="text-sm text-muted-foreground">{description}</p>
+    <div className="space-y-1">
+      <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+      <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 }

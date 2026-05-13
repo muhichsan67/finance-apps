@@ -1,36 +1,18 @@
 import { redirect } from "next/navigation";
+import type { AppRole } from "@/core/domain/auth";
 import { getCurrentUserRole } from "@/lib/auth/get-current-user-role";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { SignOutButton } from "@/components/auth/sign-out-button";
-import { AppNav } from "@/components/app-nav";
+import { AppShell } from "@/components/app-shell";
 
 export default async function ProtectedLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  let role: AppRole;
   try {
-    const { role } = await getCurrentUserRole();
-
-    return (
-      <main className="mx-auto min-h-dvh w-full max-w-6xl p-4">
-        <header className="flex items-center justify-between gap-2">
-          <div>
-            <h1 className="text-lg font-semibold">Finance Application</h1>
-            <p className="text-sm text-muted-foreground">
-              Logged in as <span className="font-medium">{role}</span>
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <SignOutButton />
-          </div>
-        </header>
-        <div className="mt-6">
-          <AppNav role={role} />
-          {children}
-        </div>
-      </main>
-    );
+    const result = await getCurrentUserRole();
+    role = result.role;
   } catch {
     redirect("/login");
   }
+
+  return <AppShell role={role}>{children}</AppShell>;
 }
