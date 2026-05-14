@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useTransition } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import type { Category } from "@/core/domain/category";
 import type { Source } from "@/core/domain/source";
 import { prepareClientAttachmentFile } from "@/lib/attachments/prepare-client-attachment-file";
@@ -25,7 +27,6 @@ export function TransactionCreateForm({
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
   const [pending, startTransition] = useTransition();
 
   const canSubmit = categories.length > 0 && sources.length > 0;
@@ -36,7 +37,6 @@ export function TransactionCreateForm({
       className="app-card grid gap-4 p-5"
       onSubmit={(e) => {
         e.preventDefault();
-        setMessage(null);
         const form = e.currentTarget;
 
         startTransition(() => {
@@ -54,15 +54,17 @@ export function TransactionCreateForm({
 
               const result = await createTransactionAction(fd);
               if (!result.ok) {
-                setMessage({ type: "err", text: result.error });
+                toast.error(result.error);
                 return;
               }
+              toast.success(
+                prepared.length
+                  ? `Transaction #${result.transactionId} saved with ${prepared.length} attachment(s).`
+                  : `Transaction #${result.transactionId} saved.`
+              );
               router.push(`/transactions/${result.transactionId}`);
             } catch (err) {
-              setMessage({
-                type: "err",
-                text: err instanceof Error ? err.message : "Could not save transaction.",
-              });
+              toast.error(err instanceof Error ? err.message : "Could not save transaction.");
             }
           })();
         });
@@ -193,19 +195,8 @@ export function TransactionCreateForm({
         </p>
       </div>
 
-      {message && (
-        <p
-          className={
-            message.type === "ok"
-              ? "text-sm font-medium text-emerald-700 dark:text-emerald-400"
-              : "text-sm font-medium text-red-600 dark:text-red-400"
-          }
-        >
-          {message.text}
-        </p>
-      )}
-
-      <Button type="submit" className="w-full" disabled={!canSubmit || pending}>
+      <Button type="submit" className="w-full gap-2" disabled={!canSubmit || pending}>
+        {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
         {pending ? "Saving…" : "Save transaction"}
       </Button>
     </form>

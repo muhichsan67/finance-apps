@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Calendar, ChevronRight, Paperclip, Tag, Wallet } from "lucide-react";
 import type { TransactionListItem } from "@/core/domain/transaction";
 
-const money = new Intl.NumberFormat(undefined, {
+const money = new Intl.NumberFormat('id-ID', {
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 });
@@ -12,7 +12,7 @@ const money = new Intl.NumberFormat(undefined, {
 function formatDisplayDate(isoDate: string) {
   const d = new Date(isoDate + "T12:00:00");
   if (Number.isNaN(d.getTime())) return isoDate;
-  return d.toLocaleDateString(undefined, {
+  return d.toLocaleDateString('id-ID', {
     weekday: "short",
     month: "short",
     day: "numeric",

@@ -4,6 +4,8 @@ import type {
   TransactionAttachmentItem,
   TransactionDetail,
   TransactionListItem,
+  TransactionListPage,
+  TransactionListQuery,
   TransactionRepository,
 } from "@/core/domain/transaction";
 
@@ -40,17 +42,47 @@ export class SupabaseTransactionRepository implements TransactionRepository {
     return id;
   }
 
-  async listActiveForUser(userId: string): Promise<TransactionListItem[]> {
-    const { data: txs, error } = await this.supabase
+  async listForUserPaged(query: TransactionListQuery): Promise<TransactionListPage> {
+    const page = Math.max(1, query.page);
+    const pageSize = Math.min(50, Math.max(1, query.pageSize));
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    let categoryIds: number[] | null = null;
+    if (query.categoryType) {
+      const { data: cats, error: catErr } = await this.supabase
+        .from("categories")
+        .select("id")
+        .eq("type", query.categoryType)
+        .is("deleted_at", null);
+      if (catErr) throw new Error(`Failed to resolve categories: ${catErr.message}`);
+      categoryIds = (cats ?? []).map((c) => (typeof c.id === "number" ? c.id : Number(c.id)));
+      if (categoryIds.length === 0) {
+        return { items: [], total: 0, page, pageSize };
+      }
+    }
+
+    let q = this.supabase
       .from("transactions")
-      .select("id, amount, transaction_date, description, category_id, source_id")
-      .eq("user_id", userId)
-      .is("deleted_at", null)
+      .select("id, amount, transaction_date, description, category_id, source_id", { count: "exact" })
+      .eq("user_id", query.userId)
+      .is("deleted_at", null);
+
+    if (query.dateFrom) q = q.gte("transaction_date", query.dateFrom);
+    if (query.dateTo) q = q.lte("transaction_date", query.dateTo);
+    if (query.sourceId != null && query.sourceId > 0) q = q.eq("source_id", query.sourceId);
+    if (categoryIds) q = q.in("category_id", categoryIds);
+
+    const { data: txs, error, count } = await q
       .order("transaction_date", { ascending: false })
-      .order("id", { ascending: false });
+      .order("id", { ascending: false })
+      .range(from, to);
 
     if (error) throw new Error(`Failed to load transactions: ${error.message}`);
-    if (!txs?.length) return [];
+    const total = count ?? 0;
+    if (!txs?.length) {
+      return { items: [], total, page, pageSize };
+    }
 
     const ids = txs.map((t) => (typeof t.id === "number" ? t.id : Number(t.id)));
     const catIds = [...new Set(txs.map((t) => t.category_id).filter((x) => x != null))] as number[];
@@ -80,7 +112,7 @@ export class SupabaseTransactionRepository implements TransactionRepository {
       countMap.set(tid, (countMap.get(tid) ?? 0) + 1);
     }
 
-    return txs.map((t) => {
+    const items: TransactionListItem[] = txs.map((t) => {
       const id = typeof t.id === "number" ? t.id : Number(t.id);
       const categoryId = t.category_id != null ? (t.category_id as number) : null;
       const sourceId = t.source_id != null ? (t.source_id as number) : null;
@@ -91,12 +123,13 @@ export class SupabaseTransactionRepository implements TransactionRepository {
         description: t.description as string | null,
         categoryId,
         sourceId,
-        categoryName:
-          categoryId != null ? (catMap.get(categoryId) ?? null) : null,
+        categoryName: categoryId != null ? (catMap.get(categoryId) ?? null) : null,
         sourceName: sourceId != null ? (srcMap.get(sourceId) ?? null) : null,
         attachmentCount: countMap.get(id) ?? 0,
       };
     });
+
+    return { items, total, page, pageSize };
   }
 
   async softDeleteTransaction(id: number, actorUserId: string): Promise<void> {

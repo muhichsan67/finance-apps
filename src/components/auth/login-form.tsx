@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { z } from "zod";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,40 +17,42 @@ export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   return (
     <form
       className="grid gap-4"
       onSubmit={async (e) => {
         e.preventDefault();
-        setError("");
 
         const parsed = loginSchema.safeParse({ email, password });
         if (!parsed.success) {
-          setError(parsed.error.issues[0]?.message ?? "Invalid credentials.");
+          toast.error(parsed.error.issues[0]?.message ?? "Invalid credentials.");
           return;
         }
 
-        setLoading(true);
-        try {
-          const supabase = getSupabaseBrowserClient();
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: parsed.data.email,
-            password: parsed.data.password,
-          });
+        startTransition(() => {
+          void (async () => {
+            try {
+              const supabase = getSupabaseBrowserClient();
+              const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: parsed.data.email,
+                password: parsed.data.password,
+              });
 
-          if (signInError) {
-            setError(signInError.message);
-            return;
-          }
+              if (signInError) {
+                toast.error(signInError.message);
+                return;
+              }
 
-          router.replace("/dashboard");
-          router.refresh();
-        } finally {
-          setLoading(false);
-        }
+              toast.success("Signed in.");
+              router.replace("/dashboard");
+              router.refresh();
+            } catch (err) {
+              toast.error(err instanceof Error ? err.message : "Sign in failed.");
+            }
+          })();
+        });
       }}
     >
       <input
@@ -65,10 +69,10 @@ export function LoginForm() {
         onChange={(e) => setPassword(e.target.value)}
         className="h-12 rounded-2xl border border-border/80 bg-card/80 px-4 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
-      <Button type="submit" disabled={loading}>
-        {loading ? "Signing in..." : "Login"}
+      <Button type="submit" disabled={pending} className="w-full gap-2">
+        {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+        {pending ? "Signing in…" : "Login"}
       </Button>
-      {error && <p className="text-sm text-red-500">{error}</p>}
     </form>
   );
 }

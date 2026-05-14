@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { UploadTransactionAttachmentsUseCase } from "@/core/use-cases/upload-transaction-attachments";
 import { SupabaseTransactionAttachmentRepository } from "@/infrastructure/repositories/supabase-transaction-attachment-repository";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -22,7 +24,6 @@ type UploadResult = {
 export function TransactionAttachmentUploader() {
   const [transactionId, setTransactionId] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [feedback, setFeedback] = useState("");
 
   const uploadMutation = useMutation<UploadResult[], Error>({
     mutationFn: async () => {
@@ -53,10 +54,12 @@ export function TransactionAttachmentUploader() {
       }));
     },
     onSuccess: (result) => {
-      setFeedback(`Uploaded ${result.length} file(s) successfully.`);
+      toast.success(`Uploaded ${result.length} file(s).`);
       setSelectedFiles([]);
     },
-    onError: (error) => setFeedback(error.message),
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 
   return (
@@ -78,7 +81,6 @@ export function TransactionAttachmentUploader() {
           multiple
           accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
           onChange={(e) => {
-            setFeedback("");
             setSelectedFiles(Array.from(e.target.files ?? []));
           }}
           className="block w-full text-sm"
@@ -86,9 +88,12 @@ export function TransactionAttachmentUploader() {
         <Button
           onClick={() => uploadMutation.mutate()}
           disabled={uploadMutation.isPending}
-          className="w-full"
+          className="w-full gap-2"
         >
-          {uploadMutation.isPending ? "Uploading..." : "Upload Attachments"}
+          {uploadMutation.isPending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : null}
+          {uploadMutation.isPending ? "Uploading…" : "Upload attachments"}
         </Button>
       </div>
 
@@ -102,7 +107,6 @@ export function TransactionAttachmentUploader() {
         </div>
       )}
 
-      {feedback && <p className="mt-3 text-sm">{feedback}</p>}
     </section>
   );
 }

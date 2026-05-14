@@ -11,6 +11,11 @@ export interface ProfileUser {
 
 export interface UsersRepository {
   listActiveUsers(): Promise<ProfileUser[]>;
+  getActiveUserById(userId: string): Promise<ProfileUser | null>;
   updateUserRole(userId: string, role: AppRole): Promise<void>;
+  updateUserProfile(
+    userId: string,
+    input: { name?: string | null; role?: AppRole }
+  ): Promise<void>;
   softDeleteUser(userId: string): Promise<void>;
 }

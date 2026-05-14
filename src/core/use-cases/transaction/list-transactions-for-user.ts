@@ -1,9 +1,13 @@
-import type { TransactionListItem, TransactionRepository } from "@/core/domain/transaction";
+import type {
+  TransactionListPage,
+  TransactionListQuery,
+  TransactionRepository,
+} from "@/core/domain/transaction";
 
 export class ListTransactionsForUserUseCase {
   constructor(private readonly repository: TransactionRepository) {}
 
-  execute(userId: string): Promise<TransactionListItem[]> {
-    return this.repository.listActiveForUser(userId);
+  execute(query: TransactionListQuery): Promise<TransactionListPage> {
+    return this.repository.listForUserPaged(query);
   }
 }
